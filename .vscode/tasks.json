@@ -1,0 +1,28 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "cppbuild",
+      "label": "C/C++: g++ build active file with MySQL",
+      "command": "C:\\msys64\\ucrt64\\bin\\g++.exe",
+      "args": [
+        "-fdiagnostics-color=always",
+        "-g",
+        "-I\"C:/Program Files/MySQL/MySQL Server 8.0/include\"",
+        "-L\"C:/Program Files/MySQL/MySQL Server 8.0/lib\"",
+        "${file}",
+        "-o",
+        "${fileDirname}\\${fileBasenameNoExtension}.exe",
+        "-lmysql"
+      ],
+      "options": {
+        "cwd": "C:\\msys64\\ucrt64\\bin"
+      },
+      "problemMatcher": ["$gcc"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}

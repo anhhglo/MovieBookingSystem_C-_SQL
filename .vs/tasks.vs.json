@@ -1,0 +1,10 @@
+{
+  "version": "0.2.1",
+  "tasks": [
+    {
+      "taskLabel": "task-MovieBookingSystem_C\u002B\u002B_SQL",
+      "appliesTo": "/",
+      "type": "launch"
+    }
+  ]
+}
