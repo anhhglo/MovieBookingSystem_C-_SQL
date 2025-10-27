@@ -39,7 +39,23 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="Booking.cpp" />
+		<Unit filename="Booking.h" />
+		<Unit filename="Cinema.cpp" />
+		<Unit filename="Cinema.h" />
+		<Unit filename="Customer.cpp" />
+		<Unit filename="Customer.h" />
+		<Unit filename="Database.cpp" />
+		<Unit filename="Database.h" />
+		<Unit filename="Menu.cpp" />
+		<Unit filename="Menu.h" />
+		<Unit filename="Movie.cpp" />
+		<Unit filename="Movie.h" />
+		<Unit filename="hall.cpp" />
+		<Unit filename="hall.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="qrcodegen.cpp" />
+		<Unit filename="qrcodegen.hpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

@@ -9,19 +9,23 @@ public:
     int id;
     int customer_id;
     int screening_id;
-    std::string seats; // "A1,A2"
+    std::string seats;
     int seat_count;
     double total_price;
-    std::string status; // PENDING/PAID/CANCELLED
+    std::string status;
     std::string qr;
 
-    Booking();
-    Booking(int customer_id, int screening_id, const std::string& seats, int seat_count, double total_price);
-
+    // Các hàm chính
     static bool createBooking(Database& db, Booking& b);
-    static bool markPaid(Database& db, int booking_id);
-    static void showBooking(Database& db, int booking_id);
+    static void showMyBookings(Database& db, int customer_id);
+    static void showSeatMatrix(Database& db, int screening_id);
+
+    // Tạo QR dạng text placeholder
     static std::string generateQRCodePlaceholder(int booking_id);
+
+    // 🆕 Thêm 2 hàm này để khớp với phần định nghĩa trong Booking.cpp
+    static std::string generateQRCodeData(int booking_id);
+    static void printQRCodeToConsole(const std::string& text);
 };
 
 #endif

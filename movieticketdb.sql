@@ -41,7 +41,7 @@ CREATE TABLE hall_tb (
   hall_id INT AUTO_INCREMENT PRIMARY KEY,
   cinema_id INT NOT NULL,
   hall_name VARCHAR(50) NOT NULL,
-  seat_count INT NOT NULL,
+  seat_count INT NOT NULL,	
   FOREIGN KEY (cinema_id) REFERENCES cinema_tb(cinema_id)
 );
 
@@ -124,3 +124,4 @@ CREATE TABLE booking_tb (
   FOREIGN KEY (customer_id) REFERENCES customer_tb(customer_id),
   FOREIGN KEY (screening_id) REFERENCES screening_tb(screening_id)
 );
+select * from customer_tb

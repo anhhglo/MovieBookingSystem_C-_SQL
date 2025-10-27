@@ -3,10 +3,10 @@
 #include "Movie.h"
 #include "Cinema.h"
 #include "Booking.h"
+#include "Hall.h"
 #include <iostream>
 #include <sstream>
 using namespace std;
-
 
 // 🟩 Hàm đăng nhập admin
 bool Menu::adminLogin(Database& db) {
@@ -15,7 +15,7 @@ bool Menu::adminLogin(Database& db) {
     cout << "Username: "; cin >> user;
     cout << "Password: "; cin >> pass;
 
-    MYSQL* conn = db.getConnection();  // ✅ đúng cách
+    MYSQL* conn = db.getConnection();
     if (!conn) return false;
 
     string query = "SELECT * FROM admin_tb WHERE username='" + user + "' AND password='" + pass + "'";
@@ -42,7 +42,8 @@ void Menu::showAdminMenu(Database& db) {
         cout << "\n=== Admin Menu ===\n";
         cout << "1. Manage Movies\n";
         cout << "2. Manage Cinemas\n";
-        cout << "3. Logout\n";
+        cout << "3. Manage Halls\n";   // 🟢 thêm dòng này
+        cout << "4. Logout\n";
         cout << "Choose: ";
         cin >> choice;
 
@@ -51,13 +52,15 @@ void Menu::showAdminMenu(Database& db) {
         else if (choice == 2)
             Cinema::manageCinemas(db);
         else if (choice == 3)
+            Hall::manageHalls(db);  // 🟢 gọi hàm quản lý hall
+        else if (choice == 4)
             break;
         else
             cout << "Invalid choice.\n";
     }
 }
 
-// 🟩 Hàm đăng nhập khách hàng
+// 🟩 Đăng nhập khách hàng
 bool Menu::customerLogin(Database& db, int& customer_id, string& customer_name) {
     string user, pass;
     cout << "\n=== Customer Login ===\n";
@@ -101,44 +104,77 @@ void Menu::registerCustomer(Database& db) {
         cout << "❌ Failed to register. Maybe username exists.\n";
 }
 
-// 🟩 Menu dành cho khách hàng
+// 🟩 Menu khách hàng
 void Menu::showCustomerMenu(Database& db, int customer_id, string customer_name) {
     int choice;
     while (true) {
         cout << "\n=== Customer Menu ===\n";
         cout << "1. List Movies\n";
         cout << "2. Book Ticket\n";
-        cout << "3. Logout\n";
+        cout << "3. View My Bookings\n";
+        cout << "4. Logout\n";
         cout << "Choose: ";
         cin >> choice;
 
-        if (choice == 1)
+        if (choice == 1) {
             Movie::listMovies(db);
+        }
         else if (choice == 2) {
             int screening_id, seat_count;
             string seats;
             double total_price;
-            cout << "Enter screening_id: "; cin >> screening_id;
-            cout << "Seats (e.g. A1,A2): "; cin >> ws; getline(cin, seats);
-            cout << "Seat count: "; cin >> seat_count;
 
+            cout << "\nEnter screening_id: ";
+            cin >> screening_id;
+
+            // 🟢 Hiển thị sơ đồ ghế từ SQL (A1, A2, ..., X)
+            Booking::showSeatMatrix(db, screening_id);
+
+            cin.ignore();
+            cout << "Seats (e.g. A1,A2): ";
+            getline(cin, seats);
+            cout << "Seat count: ";
+            cin >> seat_count;
+
+            // 🟢 Lấy giá vé
             MYSQL_RES* r = db.queryResult("SELECT ticket_price FROM screening_tb WHERE screening_id=" + to_string(screening_id));
             if (!r) continue;
             MYSQL_ROW rr = mysql_fetch_row(r);
-            if (!rr) { cout << "Screening not found.\n"; mysql_free_result(r); continue; }
+            if (!rr) {
+                cout << "Screening not found.\n";
+                mysql_free_result(r);
+                continue;
+            }
             total_price = atof(rr[0]) * seat_count;
             mysql_free_result(r);
 
-            Booking b(customer_id, screening_id, seats, seat_count, total_price);
+            // 🟢 Tạo đối tượng booking
+            Booking b;
+            b.customer_id = customer_id;
+            b.screening_id = screening_id;
+            b.seats = seats;
+            b.seat_count = seat_count;
+            b.total_price = total_price;
+
             if (Booking::createBooking(db, b))
                 cout << "✅ Booking successful! QR: " << b.qr << endl;
             else
                 cout << "❌ Booking failed.\n";
-        } else if (choice == 3) break;
-        else cout << "Invalid choice.\n";
+        }
+        else if (choice == 3) {
+            Booking::showMyBookings(db, customer_id);
+        }
+        else if (choice == 4) {
+            cout << "Goodbye, " << customer_name << "!\n";
+            break;
+        }
+        else {
+            cout << "Invalid choice.\n";
+        }
     }
 }
-// 🟩 Hàm hiển thị menu chính
+
+// 🟩 Menu chính
 void Menu::show(Database& db) {
     int choice;
     while (true) {
@@ -172,4 +208,3 @@ void Menu::show(Database& db) {
         }
     }
 }
-
